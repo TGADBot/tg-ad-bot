@@ -2,7 +2,7 @@
 const Telegraf = require('telegraf');
 const session = require('telegraf/session');
 const Telegram = require('telegraf/telegram');
-const telegram = new Telegram('1004560328:AAEcfg5LiFeNDLdiB_99GJkKCGcQefp09rQ', {
+const telegram = new Telegram(process.env.TOKEN, {
   agent: null,        
   webhookReply: true  
 });
@@ -19,7 +19,7 @@ const cancelButton = Markup.keyboard([
     Markup.callbackButton('Отмена', 'cancel')
   ])
 
-const bot = new Telegraf('1004560328:AAEcfg5LiFeNDLdiB_99GJkKCGcQefp09rQ');
+const bot = new Telegraf(process.env.TOKEN);
 
 const http = require('http');
 const https = require('https');
