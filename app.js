@@ -2,7 +2,7 @@
 const Telegraf = require('telegraf');
 const session = require('telegraf/session');
 const Telegram = require('telegraf/telegram');
-const telegram = new Telegram('945599100:AAHAw1jgR_gmQ1pj1MKJlhgnuWjdMC6Vv4E', {
+const telegram = new Telegram(process.env.TOKEN, {
   agent: null,        
   webhookReply: true  
 });
@@ -19,7 +19,7 @@ const cancelButton = Markup.keyboard([
     Markup.callbackButton('Отмена', 'cancel')
   ])
 
-const bot = new Telegraf('945599100:AAHAw1jgR_gmQ1pj1MKJlhgnuWjdMC6Vv4E');
+const bot = new Telegraf(process.env.TOKEN);
 
 const http = require('http');
 const https = require('https');
@@ -27,10 +27,10 @@ http.createServer().listen(process.env.PORT || 5000).on('request', function(req,
     res.end('')
 });
 setInterval(function(){
-    https.get('https://tg-bot-ad-only-one.herokuapp.com/')
+    https.get(process.end.MAIN_URL)
 },300000)
 
-const url = "https://api.myjson.com/bins/1a015w";
+const url = process.env.JSON_HTTP;
 
 const getAd = async() => {
     const settings = { method: "GET"};
@@ -48,9 +48,7 @@ const updateAd = async (newData) =>{
     }});
 }
 
-const channelId = -1001391164414;
-
-const groupId = -1001257486779;
+const groupId = process.env.GROUP_ID;
 
 let id;
 
