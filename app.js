@@ -28,7 +28,7 @@ http.createServer().listen(process.env.PORT || 5000).on('request', function(req,
     res.end('')
 });
 setInterval(function(){
-    https.get(process.end.MAIN_URL)
+    https.get(process.env.MAIN_URL)
 },300000)
 
 const url = process.env.JSON_HTTP;
