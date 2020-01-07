@@ -9,6 +9,7 @@ const telegram = new Telegram(process.env.TOKEN, {
 const Extra = require('telegraf/extra')
 const Markup = require('telegraf/markup')
 const fetch = require('node-fetch');
+const markdown = Extra.markdown();
 
 const mainKeyboard = Markup.keyboard([
   Markup.callbackButton('Изменить сообщение', 'edit'),
@@ -73,7 +74,11 @@ const replaceMessage = async () =>{
     if (ad.id) {
         telegram.deleteMessage(groupId,ad.id);
     }
-    telegram.sendMessage(groupId,ad.text).then((res)=>{  updateAd({text: ad.text, id: res.message_id});});
+    if (ad.image) {
+        telegram.sendPhoto(groupId,ad.image,{caption: ad.text, parse_mode: 'Markdown'}).then((res)=>{  updateAd({text: ad.text, id: res.message_id, image: ad.image});});
+    } else {
+        telegram.sendMessage(groupId,ad.text,markdown).then((res)=>{  updateAd({text: ad.text, id: res.message_id});});
+    }
 }
 
 bot.on('new_chat_members', (ctx) => {
@@ -149,11 +154,23 @@ bot.on( 'text', async (ctx)=>{
     }
     if (isEditing) {
         const currentMessage = await getAd();
-        await updateAd({text: ctx.message.text, id: currentMessage.id});
+        await updateAd({text: ctx.message.text, id: currentMessage.id, image: ""});
         currentMessage.text = ctx.message.text;
         await ctx.reply('Сообщение изменено!', Extra.markup(mainKeyboard));
+        isEditing = false;
     } else {
         ctx.reply('Вы можете редактировать и просматривать сообщение', Extra.markup(mainKeyboard))
+    }
+})
+bot.on('photo', async(ctx)=>{
+    if (ctx.message.chat.id == groupId) {
+        return true;
+    }
+    if(isEditing) {
+        const currentMessage = await getAd();
+        await updateAd({text: ctx.message.caption, id: currentMessage.id, image: ctx.message.photo[0]['file_id']});
+        await ctx.reply('Сообщение изменено!', Extra.markup(mainKeyboard));
+        isEditing = false;
     }
 })
 
